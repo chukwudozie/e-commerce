@@ -3,6 +3,7 @@ package dev.saha.customer.service.impl;
 import dev.saha.customer.dto.CustomerRequest;
 import dev.saha.customer.dto.CustomerResponse;
 import dev.saha.customer.dto.UpdateRequest;
+import dev.saha.customer.exception.CustomException;
 import dev.saha.customer.exception.NotFoundException;
 import dev.saha.customer.mapper.CustomerMapper;
 import dev.saha.customer.model.Customer;
@@ -68,11 +69,46 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerResponse> getAllCustomers() {
-        return repository.findAll()
+        List<CustomerResponse> customerResponses =  repository.findAll()
                 .stream()
                 .map(mapper::toCustomerResponse)
                 .collect(Collectors.toList());
+        if (customerResponses.isEmpty()) {
+            throw new NotFoundException("Failed to find all customers");
+        }
+        return customerResponses;
 
+    }
+
+    private void validateId(String id){
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new CustomException("Customer id is required",400);
+        }
+    }
+
+    @Override
+    public boolean customerExists(String id) {
+        validateId(id);
+        return repository.existsById(id);
+    }
+
+    @Override
+    public Map<String, Object> findCustomerById(String id) {
+        validateId(id);
+        Customer customer =  repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Failed to get customer with id : %s", id)));
+        return Map.of("customer", customer);
+    }
+
+    @Override
+    public Map<String, Object> deleteCustomer(String id) {
+        validateId(id);
+        if(repository.existsById(id)) {
+            repository.deleteById(id);
+            return Map.of("response", "Customer deleted successfully");
+
+        }
+        return Map.of("error", "Customer not found");
     }
 
     private void mergeCustomer(Customer existingCustomer, UpdateRequest request) {

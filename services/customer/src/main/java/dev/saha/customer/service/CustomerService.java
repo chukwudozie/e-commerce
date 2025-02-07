@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface CustomerService {
 
@@ -16,4 +17,9 @@ public interface CustomerService {
 
     List<CustomerResponse> getAllCustomers();
 
+    boolean customerExists(String id);
+
+    Map<String, Object> findCustomerById(String id);
+
+    Map<String, Object> deleteCustomer(String id);
 }

@@ -37,6 +37,24 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<List<CustomerResponse>> getAllCustomers (){
         List<CustomerResponse> response = customerService.getAllCustomers();
-        return (!response.isEmpty()) ? ResponseEntity.ok(response) : ResponseEntity.notFound().build();
+        return  ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Map<String, Boolean>> customerExists (@PathVariable String id){
+        boolean response = customerService.customerExists(id);
+        return  ResponseEntity.ok(Map.of("exists", response));
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<Map<String, Object>> fetchById (@PathVariable  String id){
+        Map<String,Object> response  = customerService.findCustomerById(id);
+        return (response.containsKey("error")) ? ResponseEntity.badRequest().body(response) :
+                ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String,Object>> deleteCustomer (@PathVariable String id){
+        return ResponseEntity.ok(customerService.deleteCustomer(id));
     }
 }
