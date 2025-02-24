@@ -1,7 +1,9 @@
 package dev.saha.productsservice.controller;
 
+import dev.saha.productsservice.dto.ProductPurchaseRequest;
+import dev.saha.productsservice.dto.ProductPurchaseResponse;
 import dev.saha.productsservice.dto.ProductRequest;
-import dev.saha.productsservice.model.Product;
+import dev.saha.productsservice.dto.ProductResponse;
 import dev.saha.productsservice.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static dev.saha.productsservice.util.Constants.ERROR;
@@ -30,9 +33,20 @@ public class ProductController {
     }
 
     @GetMapping("get-by-id/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
+    @GetMapping("get-all/")
+    public ResponseEntity<List<ProductResponse>> getProductById() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @PutMapping("purchase-products")
+    public ResponseEntity<List<ProductPurchaseResponse>> purchaseProduct (@RequestBody List<ProductPurchaseRequest> request){
+        return ResponseEntity.ok(productService.purchaseProduct(request));
+    }
+
 
 
 }

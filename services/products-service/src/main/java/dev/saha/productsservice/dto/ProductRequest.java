@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 @Getter
 @Setter
-public record ProductRequest(
+public record  ProductRequest(
         @NotBlank(message = "Product name is required")
         String name,
         @NotBlank(message = "Product description is required")

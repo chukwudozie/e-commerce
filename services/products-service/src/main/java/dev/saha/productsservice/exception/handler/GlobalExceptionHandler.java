@@ -47,6 +47,7 @@ public class GlobalExceptionHandler {
             case 403 -> FORBIDDEN;
             case 404 -> NOT_FOUND;
             case 500 -> INTERNAL_SERVER_ERROR;
+            case 417 -> EXPECTATION_FAILED;
             default -> BAD_REQUEST;
         };
     }
